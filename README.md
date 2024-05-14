@@ -74,8 +74,7 @@ The module includes several option switches, which you can use to enable various
   - Requires following additional variables
     - `domainuser` - Domain account with necessary privileges to join a computer to the domain.
     - `domainpass` - Domain user password.
-    - `windows_customization` needs to be set to `true` to force the module to use Windows customization.
-    - `linux_customization` needs to be set to `false` to disable the module to use linux customization (default: true). 
+    - `is_windows_image` needs to be set to `true` to force the module to use Windows customization.
 
 > Note: When deploying a windows server in WorkGroup, we recommend keeping the Local Admin password set to its default and change it later via a script. Unfortunately, Terraform will re-deploy the entire server if you change the local admin password.
 

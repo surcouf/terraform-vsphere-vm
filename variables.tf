@@ -329,14 +329,8 @@ variable "domain" {
 }
 
 
-#Customization Variables
-variable "linux_customization" {
-  description = "Boolean flag to notify when the custom image is linux based."
-  type        = bool
-  default     = true
-}
-
-variable "windows_customization" {
+#Windows Customization Variables
+variable "is_windows_image" {
   description = "Boolean flag to notify when the custom image is windows based."
   type        = bool
   default     = false

@@ -219,7 +219,7 @@ resource "vsphere_virtual_machine" "vm" {
 
     customize {
       dynamic "linux_options" {
-        for_each = var.linux_customization ? [] : [1]
+        for_each = var.is_windows_image ? [] : [1]
         content {
           host_name    = var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)
           domain       = var.domain
@@ -228,7 +228,7 @@ resource "vsphere_virtual_machine" "vm" {
       }
 
       dynamic "windows_options" {
-        for_each = var.windows_customization ? [] : [1]
+        for_each = var.is_windows_image ? [1] : []
         content {
           computer_name         = var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)
           admin_password        = var.local_adminpass
