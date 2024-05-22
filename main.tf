@@ -93,6 +93,13 @@ resource "vsphere_virtual_machine" "vm" {
       "guestinfo.userdata" = base64encode(templatefile("${path.module}/templates/userdata.yaml.tpl", {
         hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
         ssh_keys  = var.ssh_keys_list
+      })),
+      "guestinfo.metadata.encoding" = "base64",
+      "guestinfo.metadata" = base64encode(templatefile("${path.module}/templates/metadata.yaml.tpl", {
+        hostname    = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+        domain      = var.domain
+        networks    = var.network
+        nameservers = var.dns_server_list
       }))
     },
     var.extra_config
