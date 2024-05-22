@@ -87,7 +87,16 @@ resource "vsphere_virtual_machine" "vm" {
   tags                    = var.tag_ids != null ? var.tag_ids : data.vsphere_tag.tag[*].id
   custom_attributes       = var.custom_attributes
   annotation              = var.annotation
-  extra_config            = var.extra_config
+  extra_config            = merge( 
+    {
+      "guestinfo.userdata.encoding" = "base64",
+      "guestinfo.userdata" = base64encode(templatefile("${path.module}/templates/userdata.yaml.tpl", {
+        hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+        ssh_keys  = var.ssh_keys_list
+      }))
+    },
+    var.extra_config
+  )
   firmware                = var.content_library == null && var.firmware == null ? data.vsphere_virtual_machine.template[0].firmware : var.firmware
   efi_secure_boot_enabled = var.content_library == null && var.efi_secure_boot == null ? data.vsphere_virtual_machine.template[0].efi_secure_boot_enabled : var.efi_secure_boot
   enable_disk_uuid        = var.content_library == null && var.enable_disk_uuid == null ? data.vsphere_virtual_machine.template[0].enable_disk_uuid : var.enable_disk_uuid

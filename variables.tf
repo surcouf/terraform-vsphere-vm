@@ -493,3 +493,9 @@ variable "force_power_off" {
   type        = bool
   default     = null
 }
+
+variable "ssh_keys_list" {
+  description = "SSH public keys to be authorized to connect as root"
+  type        = list(string)
+  default     = [""]
+}
