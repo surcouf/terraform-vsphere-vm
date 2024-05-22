@@ -225,53 +225,6 @@ resource "vsphere_virtual_machine" "vm" {
     template_uuid = var.content_library == null ? data.vsphere_virtual_machine.template[0].id : data.vsphere_content_library_item.library_item_template[0].id
     linked_clone  = var.linked_clone
     timeout       = var.timeout
-
-    customize {
-      dynamic "linux_options" {
-        for_each = var.is_windows_image ? [] : [1]
-        content {
-          host_name    = var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)
-          domain       = var.domain
-          hw_clock_utc = var.hw_clock_utc
-        }
-      }
-
-      dynamic "windows_options" {
-        for_each = var.is_windows_image ? [1] : []
-        content {
-          computer_name         = var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)
-          admin_password        = var.local_adminpass
-          workgroup             = var.workgroup
-          join_domain           = var.windomain
-          domain_admin_user     = var.domain_admin_user
-          domain_admin_password = var.domain_admin_password
-          organization_name     = var.orgname
-          run_once_command_list = var.run_once
-          auto_logon            = var.auto_logon
-          auto_logon_count      = var.auto_logon_count
-          time_zone             = var.time_zone
-          product_key           = var.productkey
-          full_name             = var.full_name
-        }
-      }
-
-      dynamic "network_interface" {
-        for_each = keys(var.network)
-        content {
-          ipv4_address = split("/", var.network[keys(var.network)[network_interface.key]][count.index])[0]
-          ipv4_netmask = var.network[keys(var.network)[network_interface.key]][count.index] == "" ? null : (
-            length(split("/", var.network[keys(var.network)[network_interface.key]][count.index])) == 2 ? (
-              split("/", var.network[keys(var.network)[network_interface.key]][count.index])[1]
-              ) : (
-              length(var.ipv4submask) == 1 ? var.ipv4submask[0] : var.ipv4submask[network_interface.key]
-            )
-          )
-        }
-      }
-      dns_server_list = var.dns_server_list
-      dns_suffix_list = var.dns_suffix_list
-      ipv4_gateway    = var.vmgateway
-    }
   }
 
   // Advanced options
