@@ -104,13 +104,14 @@ resource "vsphere_virtual_machine" "vm" {
     },
     var.extra_config
   )
+  extra_config_reboot_required = false
   firmware                = var.content_library == null && var.firmware == null ? data.vsphere_virtual_machine.template[0].firmware : var.firmware
   efi_secure_boot_enabled = var.content_library == null && var.efi_secure_boot == null ? data.vsphere_virtual_machine.template[0].efi_secure_boot_enabled : var.efi_secure_boot
   enable_disk_uuid        = var.content_library == null && var.enable_disk_uuid == null ? data.vsphere_virtual_machine.template[0].enable_disk_uuid : var.enable_disk_uuid
   storage_policy_id       = var.storage_policy_id
 
-  datastore_cluster_id = var.datastore_cluster != "" ? data.vsphere_datastore_cluster.datastore_cluster[0].id : null
-  datastore_id         = var.datastore != "" ? data.vsphere_datastore.datastore[0].id : null
+  datastore_cluster_id    = var.datastore_cluster != "" ? data.vsphere_datastore_cluster.datastore_cluster[0].id : null
+  datastore_id            = var.datastore != "" ? data.vsphere_datastore.datastore[0].id : null
 
   num_cpus               = var.cpu_number
   num_cores_per_socket   = var.num_cores_per_socket
