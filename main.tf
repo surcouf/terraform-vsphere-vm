@@ -74,6 +74,7 @@ data "vsphere_folder" "folder" {
 locals {
   interface_count     = length(var.ipv4submask) #Used for Subnet handeling
   template_disk_count = var.content_library == null ? length(data.vsphere_virtual_machine.template[0].disks) : 0
+  network             = [ for key, network in var.network : network[0] ]
 }
 
 // Cloning a Linux or Windows VM from a given template.
@@ -95,12 +96,17 @@ resource "vsphere_virtual_machine" "vm" {
         ssh_keys  = var.ssh_keys_list
       })),
       "guestinfo.metadata.encoding" = "base64",
-      "guestinfo.metadata" = base64encode(templatefile("${path.module}/templates/metadata.yaml.tpl", {
-        hostname    = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-        domain      = var.domain
-        networks    = var.network
-        nameservers = var.dns_server_list
-      }))
+      "guestinfo.metadata" = base64encode(yamlencode(
+        {
+          instance-id     = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+          local-hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+          hostname        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+          network         = {
+            version = 1
+            config  = local.network
+          }
+        }
+      ))
     },
     var.extra_config
   )
