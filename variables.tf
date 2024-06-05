@@ -510,8 +510,72 @@ variable "force_power_off" {
   default     = null
 }
 
-variable "ssh_keys_list" {
-  description = "SSH public keys to be authorized to connect as root"
+variable "default_user" {
+  description = "Default user"
+  type        = object({
+    name                = string
+    uid                 = optional(number)
+    gecos               = optional(string)
+    groups              = optional(list(string))
+    primary_group       = optional(string)
+    create_groups       = optional(bool)
+    homedir             = optional(string)
+    shell               = optional(string)
+    inactive            = optional(string)
+    expiredate          = optional(string)
+    lock_passwd         = optional(bool, false)
+    no_create_home      = optional(bool)
+    no_log_init         = optional(bool)
+    no_user_group       = optional(bool)
+    passwd              = optional(string)
+    hashed_passwd       = optional(string)
+    plain_text_passwd   = optional(string)
+    selinux_user        = optional(string)
+    snapuser            = optional(string)
+    ssh_authorized_keys = optional(list(string))
+    ssh_import_ids      = optional(list(string))
+    ssh_redirect_user   = optional(bool)
+    system              = optional(bool)
+    sudo                = optional(string)
+  })
+  default     = {
+    name = "root"
+  }
+}
+
+variable "users" {
+  description = "Users list"
+  type        = list(object({
+    name                = string
+    uid                 = optional(number)
+    gecos               = optional(string)
+    groups              = optional(list(string))
+    primary_group       = optional(string)
+    create_groups       = optional(bool)
+    homedir             = optional(string)
+    shell               = optional(string)
+    inactive            = optional(string)
+    expiredate          = optional(string)
+    lock_passwd         = optional(bool, false)
+    no_create_home      = optional(bool)
+    no_log_init         = optional(bool)
+    no_user_group       = optional(bool)
+    passwd              = optional(string)
+    hashed_passwd       = optional(string)
+    plain_text_passwd   = optional(string)
+    selinux_user        = optional(string)
+    snapuser            = optional(string)
+    ssh_authorized_keys = optional(list(string))
+    ssh_import_ids      = optional(list(string))
+    ssh_redirect_user   = optional(bool)
+    system              = optional(bool)
+    sudo                = optional(string)
+  }))
+  default     = []
+}
+
+variable "groups" {
+  description = "Groups list"
   type        = list(string)
-  default     = [""]
+  default     = []
 }

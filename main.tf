@@ -75,6 +75,19 @@ locals {
   interface_count     = length(var.ipv4submask) #Used for Subnet handeling
   template_disk_count = var.content_library == null ? length(data.vsphere_virtual_machine.template[0].disks) : 0
   network             = [ for key, network in var.network : network[0] ]
+  user                = {
+    for key, value in var.default_user : 
+      key => value if value != null
+  }
+  users               = [
+    for user in var.users : {
+      for key, value in user : 
+        key => value if value != null
+  }]
+  groups              = [
+    for group in var.groups : 
+      group if group != ""
+  ]
 }
 
 // Cloning a Linux or Windows VM from a given template.
@@ -88,16 +101,20 @@ resource "vsphere_virtual_machine" "vm" {
   tags                    = var.tag_ids != null ? var.tag_ids : data.vsphere_tag.tag[*].id
   custom_attributes       = var.custom_attributes
   annotation              = var.annotation
-  extra_config            = merge( 
-    {
+  extra_config            = merge({
       "guestinfo.userdata.encoding" = "base64",
-      "guestinfo.userdata" = base64encode(templatefile("${path.module}/templates/userdata.yaml.tpl", {
-        hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-        ssh_keys  = var.ssh_keys_list
-      })),
+      "guestinfo.userdata" = base64encode(<<-EOT
+      #cloud-config
+      ${yamlencode({
+          hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+          user        = local.user
+          users       = local.users
+          groups      = local.groups
+      })}
+      EOT
+      ),
       "guestinfo.metadata.encoding" = "base64",
-      "guestinfo.metadata" = base64encode(yamlencode(
-        {
+      "guestinfo.metadata" = base64encode(yamlencode({
           instance-id     = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
           local-hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
           hostname        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
@@ -105,8 +122,7 @@ resource "vsphere_virtual_machine" "vm" {
             version = 1
             config  = local.network
           }
-        }
-      ))
+      }))
     },
     var.extra_config
   )
