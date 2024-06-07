@@ -310,7 +310,7 @@ resource "ansible_host" "vm" {
 resource "ansible_playbook" "playbook" {
   count       = var.instances
   name        = ansible_host.vm[count.index].name
-  playbook    = "${path.module}/ansible/playbook.yml"
+  playbook    = "${path.root}/ansible/playbook.yml"
   extra_vars  = {
     ansible_user  = "root"
     ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
