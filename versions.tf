@@ -4,5 +4,8 @@ terraform {
     vsphere = {
       source = "hashicorp/vsphere"
     }
+    ansible = {
+      source = "ansible/ansible"
+    }
   }
 }

@@ -285,3 +285,30 @@ resource "vsphere_virtual_machine" "vm" {
   shutdown_wait_timeout = var.shutdown_wait_timeout
   force_power_off       = var.force_power_off
 }
+
+resource "ansible_group" "all" {
+  name = "all"
+
+  variables = {
+    ansible_user                 = "root"
+    ansible_ssh_private_key_file = "~/.ssh/id_rsa"
+  }
+}
+
+resource "ansible_host" "vm" {
+  count       = var.instances
+  name       = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+  groups      = [ ansible_group.all.name ]
+
+  variables   = {
+    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    hostname      = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
+    fqdn          = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+  }  
+}
+
+resource "ansible_playbook" "playbook" {
+  count       = var.instances
+  name        = ansible_host.vm[count.index].name
+  playbook    = "${path.module}/ansible/playbook.yml"
+}
