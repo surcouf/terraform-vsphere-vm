@@ -579,3 +579,9 @@ variable "groups" {
   type        = list(string)
   default     = []
 }
+
+variable "hostgroups" {
+  description = "Host groups list"
+  type        = map(object({}))
+  default     = {}
+}

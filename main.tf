@@ -297,14 +297,19 @@ resource "ansible_group" "all" {
 
 resource "ansible_host" "vm" {
   count       = var.instances
-  name       = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-  groups      = [ ansible_group.all.name ]
+  name        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+  groups      =  keys(var.hostgroups)
 
   variables   = {
     ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
     hostname      = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
     fqdn          = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
   }  
+}
+
+resource "ansible_group" "groups" {
+  for_each    = var.hostgroups
+  name        = each.key
 }
 
 resource "ansible_playbook" "playbook" {
