@@ -71,6 +71,11 @@ data "vsphere_folder" "folder" {
   depends_on  = [var.vm_depends_on]
 }
 
+data "vsphere_storage_policy" "storage_policy" {
+  count = var.storage_policy != "" ? 1 : 0
+  name  = var.storage_policy 
+}
+
 locals {
   interface_count     = length(var.ipv4submask) #Used for Subnet handeling
   template_disk_count = var.content_library == null ? length(data.vsphere_virtual_machine.template[0].disks) : 0
@@ -146,7 +151,7 @@ resource "vsphere_virtual_machine" "vm" {
   firmware                = var.content_library == null && var.firmware == null ? data.vsphere_virtual_machine.template[0].firmware : var.firmware
   efi_secure_boot_enabled = var.content_library == null && var.efi_secure_boot == null ? data.vsphere_virtual_machine.template[0].efi_secure_boot_enabled : var.efi_secure_boot
   enable_disk_uuid        = var.content_library == null && var.enable_disk_uuid == null ? data.vsphere_virtual_machine.template[0].enable_disk_uuid : var.enable_disk_uuid
-  storage_policy_id       = var.storage_policy_id
+  storage_policy_id       = var.storage_policy_id == null ? data.vsphere_storage_policy.storage_policy[0].id : null
 
   datastore_cluster_id    = var.datastore_cluster != "" ? data.vsphere_datastore_cluster.datastore_cluster[0].id : null
   datastore_id            = var.datastore != "" ? data.vsphere_datastore.datastore[0].id : null

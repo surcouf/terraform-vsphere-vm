@@ -136,6 +136,11 @@ variable "storage_policy_id" {
   default     = null
 }
 
+variable "storage_policy" {
+  description = "(Optional) Storage policy to assign to VM home directory."
+  default     = null
+}
+
 ###########################################
 variable "vmname" {
   description = "The name of the virtual machine used to deploy the vms. This name can scale out based on number of instances and vmnameformat - example can be found under exampel folder"
