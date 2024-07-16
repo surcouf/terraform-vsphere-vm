@@ -321,3 +321,15 @@ resource "ansible_playbook" "playbook" {
     ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
   }
 }
+
+resource "ansible_playbook" "docker" {
+  count       = var.instances
+  name        = ansible_host.vm[count.index].name
+  playbook    = "${path.root}/ansible/docker.yml"
+  groups      = [ "docker" ]
+  extra_vars  = {
+    ansible_user  = "root"
+    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    proxy         = "proxy.maiaspace:3128"
+  }
+}
