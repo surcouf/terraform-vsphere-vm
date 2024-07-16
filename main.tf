@@ -295,7 +295,7 @@ resource "ansible_group" "all" {
   name = "all"
 
   variables = {
-    ansible_user                 = "root"
+    ansible_user                 = var.ansible_user
     ansible_ssh_private_key_file = "~/.ssh/id_rsa"
   }
 }
@@ -322,7 +322,7 @@ resource "ansible_playbook" "playbook" {
   name        = ansible_host.vm[count.index].name
   playbook    = "${path.root}/ansible/playbook.yml"
   extra_vars  = {
-    ansible_user  = "root"
+    ansible_user  = var.ansible_user
     ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
   }
 }
@@ -333,7 +333,7 @@ resource "ansible_playbook" "docker" {
   playbook    = "${path.root}/ansible/docker.yml"
   groups      = [ "docker" ]
   extra_vars  = {
-    ansible_user  = "root"
+    ansible_user  = var.ansible_user
     ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
     proxy         = "proxy.maiaspace:3128"
   }

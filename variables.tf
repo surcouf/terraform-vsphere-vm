@@ -590,3 +590,9 @@ variable "hostgroups" {
   type        = map(object({}))
   default     = {}
 }
+
+variable "ansible_user" {
+  description = "Ansible remote user"
+  type        = string
+  default     = "root"
+}
