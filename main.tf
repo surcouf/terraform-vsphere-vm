@@ -131,6 +131,7 @@ resource "vsphere_virtual_machine" "vm" {
           user        = local.user
           users       = local.users
           groups      = local.groups
+          manage_etc_hosts = true
       })}
       EOT
       ),
