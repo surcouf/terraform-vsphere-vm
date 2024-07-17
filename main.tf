@@ -296,8 +296,9 @@ resource "ansible_group" "all" {
   name = "all"
 
   variables = {
-    ansible_user                 = var.ansible_user
-    ansible_ssh_private_key_file = "~/.ssh/id_rsa"
+    ansible_user                  = var.ansible_user
+    ansible_become                = true
+    ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
   }
 }
 
