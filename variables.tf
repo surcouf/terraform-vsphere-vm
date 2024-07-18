@@ -596,3 +596,9 @@ variable "ansible_user" {
   type        = string
   default     = "root"
 }
+
+variable "http_proxy" {
+  description = "HTTP proxy server"
+  type        = string
+  default     = ""
+}

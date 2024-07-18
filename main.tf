@@ -324,9 +324,10 @@ resource "ansible_playbook" "playbook" {
   name        = ansible_host.vm[count.index].name
   playbook    = "${path.root}/ansible/playbook.yml"
   extra_vars  = {
-    ansible_host  = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
-    ansible_user  = var.ansible_user
-    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
+    ansible_user    = var.ansible_user
+    ansible_become  = true
+    proxy           = var.http_proxy
   }
 }
 
@@ -336,9 +337,8 @@ resource "ansible_playbook" "docker" {
   playbook    = "${path.root}/ansible/docker.yml"
   groups      = [ "docker" ]
   extra_vars  = {
-    ansible_host  = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
-    ansible_user  = var.ansible_user
-    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
-    proxy         = "proxy.maiaspace:3128"
+    ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
+    ansible_user    = var.ansible_user
+    ansible_become  = true
   }
 }
