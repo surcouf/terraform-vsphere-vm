@@ -1,0 +1,3 @@
+[submodule "ansible"]
+	path = ansible
+	url = https://gitlab.maia-space.com/it/ansible.git
