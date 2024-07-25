@@ -321,5 +321,6 @@ resource "ansible_playbook" "playbook" {
     ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
     ansible_become  = true
     proxy           = var.http_proxy
+    no_proxy        = var.no_proxy
   }
 }

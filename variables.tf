@@ -602,3 +602,9 @@ variable "http_proxy" {
   type        = string
   default     = ""
 }
+
+variable "no_proxy" {
+  description = "HTTP proxy white list"
+  type        = string
+  default     = ""
+}
