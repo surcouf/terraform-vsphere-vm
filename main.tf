@@ -298,9 +298,9 @@ resource "ansible_host" "vm" {
   groups      =  keys(var.hostgroups)
 
   variables   = {
-    hostname        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
-    fqdn            = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-    ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
+    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    hostname      = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
+    fqdn          = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
   }  
 }
 
@@ -316,6 +316,7 @@ resource "ansible_playbook" "playbook" {
   groups      = keys(var.hostgroups)
   extra_vars  = {
     ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
+    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user    = var.ansible_user
     ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
     ansible_become  = true
