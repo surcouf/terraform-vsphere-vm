@@ -32,3 +32,8 @@ output "disk" {
   description = "Disks of the deployed VM"
   value       = vsphere_virtual_machine.vm.*.disk
 }
+
+output "playbook" {
+  description = "Output of Ansible playbook execution"
+  value = ansible_playbook.playbook.*.ansible_playbook_stdout
+}
