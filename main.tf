@@ -315,7 +315,6 @@ resource "ansible_playbook" "playbook" {
   playbook    = "${path.root}/ansible/playbook.yml"
   groups      = keys(var.hostgroups)
   extra_vars  = {
-    ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
     ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user    = var.ansible_user
     ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
