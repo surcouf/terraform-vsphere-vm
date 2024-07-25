@@ -316,6 +316,7 @@ resource "ansible_playbook" "playbook" {
   extra_vars  = {
     ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
     ansible_user    = var.ansible_user
+    ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
     ansible_become  = true
     proxy           = var.http_proxy
   }
