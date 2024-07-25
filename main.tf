@@ -292,16 +292,6 @@ resource "vsphere_virtual_machine" "vm" {
   force_power_off       = var.force_power_off
 }
 
-resource "ansible_group" "all" {
-  name = "all"
-
-  variables = {
-    ansible_user                  = var.ansible_user
-    ansible_become                = true
-    ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
-  }
-}
-
 resource "ansible_host" "vm" {
   count       = var.instances
   name        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
