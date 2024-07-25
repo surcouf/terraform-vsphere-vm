@@ -313,6 +313,7 @@ resource "ansible_playbook" "playbook" {
   count       = var.instances
   name        = ansible_host.vm[count.index].name
   playbook    = "${path.root}/ansible/playbook.yml"
+  groups      = keys(var.hostgroups)
   extra_vars  = {
     ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
     ansible_user    = var.ansible_user
