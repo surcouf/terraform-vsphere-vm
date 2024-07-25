@@ -320,15 +320,3 @@ resource "ansible_playbook" "playbook" {
     proxy           = var.http_proxy
   }
 }
-
-resource "ansible_playbook" "docker" {
-  count       = var.instances
-  name        = ansible_host.vm[count.index].name
-  playbook    = "${path.root}/ansible/docker.yml"
-  groups      = [ "docker" ]
-  extra_vars  = {
-    ansible_host    = vsphere_virtual_machine.vm[count.index].guest_ip_addresses[0]
-    ansible_user    = var.ansible_user
-    ansible_become  = true
-  }
-}
