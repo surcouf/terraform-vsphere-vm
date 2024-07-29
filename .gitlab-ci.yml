@@ -3,6 +3,10 @@ include:
 
 image: "alpine/gitlab-ansible-terraform:1.1.9"
 
+stages:
+  - build
+  - deploy
+
 default:
   tags:
     - terraform
