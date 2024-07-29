@@ -1,2 +1,6 @@
 include:
   template: Terraform-Module.gitlab-ci.yml
+
+default:
+  tags:
+    - terraform
