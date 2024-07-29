@@ -1,11 +1,16 @@
 include:
-  template: Terraform-Module.gitlab-ci.yml
+  template: Terraform/Module-Base.gitlab-ci.yml
 
 image: "alpine/gitlab-ansible-terraform:1.1.9"
 
 stages:
   - build
   - deploy
+
+deploy:
+  extends: .terraform-module:deploy
+  rules:
+    - if: $CI_COMMIT_TAG
 
 default:
   tags:
