@@ -1,6 +1,8 @@
 include:
   template: Terraform-Module.gitlab-ci.yml
 
+image: "alpine/gitlab-ansible-terraform:1.1.9"
+
 default:
   tags:
     - terraform
