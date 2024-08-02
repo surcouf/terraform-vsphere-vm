@@ -7,7 +7,7 @@ stages:
 
 deploy:
   extends: .terraform-module:deploy
-  image: "alpine/gitlab-ansible-terraform:1.1.9"
+  image: "${CI_REGISTRY}/terraform:1.9"
   rules:
     - if: $CI_COMMIT_TAG
 
