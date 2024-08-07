@@ -117,6 +117,11 @@ resource "tls_private_key" "admin" {
   rsa_bits  = 4096
 }
 
+resource "local_sensitive_file" "ssh_key" {
+  filename  = "${path.cwd}/.ssh_id_${var.ssh_key_algorithm}"
+  content   = tls_private_key.admin.private_key_openssh
+}
+
 // Cloning a Linux or Windows VM from a given template.
 resource "vsphere_virtual_machine" "vm" {
   count      = var.instances
@@ -328,7 +333,7 @@ resource "ansible_playbook" "playbook" {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     ansible_ssh_port              = var.ssh_port
-    ansible_ssh_private_key_file  = tls_private_key.admin.private_key_openssh
+    ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.ssh_key_algorithm}"
     ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
     ansible_become                = true
     proxy                         = var.http_proxy
