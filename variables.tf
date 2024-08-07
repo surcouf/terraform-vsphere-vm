@@ -621,3 +621,9 @@ variable "ssh_options" {
     StrictHostKeyChecking = bool
   })
 }
+
+variable "ssh_key_algorithm" {
+  description = "OpenSSH key algorihtm."
+  type        = string
+  default     = "ed25519"
+}

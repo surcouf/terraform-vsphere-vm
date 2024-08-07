@@ -111,6 +111,12 @@ locals {
   ]
 }
 
+// Generate a SSH key for admin user (default)
+resource "tls_private_key" "admin" {
+  algorithm = var.ssh_key_algorithm
+  rsa_bits  = 4096
+}
+
 // Cloning a Linux or Windows VM from a given template.
 resource "vsphere_virtual_machine" "vm" {
   count      = var.instances
@@ -128,7 +134,7 @@ resource "vsphere_virtual_machine" "vm" {
       #cloud-config
       ${yamlencode({
           hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-          user        = local.user
+          user        = merge(local.user, { ssh_authorized_keys = concat(local.user.ssh_authorized_keys,[data.tls_private_key.admin.public_key_openssh]) }, local.user)
           users       = local.users
           groups      = local.groups
           manage_etc_hosts = true
@@ -318,7 +324,7 @@ resource "ansible_playbook" "playbook" {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     ansible_ssh_port              = var.ssh_port
-    ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
+    ansible_ssh_private_key_file  = data.tls_private_key.admin.private_key_openssh
     ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
     ansible_become                = true
     proxy                         = var.http_proxy
