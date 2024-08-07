@@ -319,7 +319,7 @@ resource "ansible_playbook" "playbook" {
     ansible_user                  = var.ansible_user
     ansible_ssh_port              = var.ssh_port
     ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
-    ansible_ssh_common_args       = join(" -o ", [for key, value in var.ssh_options : "${key}=${value}"])
+    ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
     ansible_become                = true
     proxy                         = var.http_proxy
     no_proxy                      = var.no_proxy
