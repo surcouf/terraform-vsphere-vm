@@ -608,3 +608,9 @@ variable "no_proxy" {
   type        = string
   default     = ""
 }
+
+variable "ssh_port" {
+  description = "SSH port"
+  type        = number
+  default     = 22
+}

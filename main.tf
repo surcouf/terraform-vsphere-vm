@@ -315,11 +315,12 @@ resource "ansible_playbook" "playbook" {
   playbook    = "${path.root}/ansible/playbook.yml"
   groups      = keys(var.hostgroups)
   extra_vars  = {
-    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
-    ansible_user    = var.ansible_user
+    ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    ansible_user                  = var.ansible_user
+    ansible_ssh_port              = var.ssh_port
     ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
-    ansible_become  = true
-    proxy           = var.http_proxy
-    no_proxy        = var.no_proxy
+    ansible_become                = true
+    proxy                         = var.http_proxy
+    no_proxy                      = var.no_proxy
   }
 }
