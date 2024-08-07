@@ -625,5 +625,5 @@ variable "ssh_options" {
 variable "ssh_key_algorithm" {
   description = "OpenSSH key algorihtm."
   type        = string
-  default     = "ed25519"
+  default     = "ED25519"
 }
