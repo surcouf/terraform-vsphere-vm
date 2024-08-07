@@ -316,7 +316,7 @@ resource "ansible_playbook" "playbook" {
   groups      = keys(var.hostgroups)
   extra_vars  = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
-    ansible_user                  = var.ansible_user
+    ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     ansible_ssh_port              = var.ssh_port
     ansible_ssh_private_key_file  = "~/.ssh/id_rsa"
     ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
