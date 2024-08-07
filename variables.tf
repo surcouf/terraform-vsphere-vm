@@ -614,3 +614,10 @@ variable "ssh_port" {
   type        = number
   default     = 22
 }
+
+variable "ssh_options" {
+  description = "OpenSSH commons options"
+  type        = object({
+    StrictHostKeyChecking = bool
+  })
+}
