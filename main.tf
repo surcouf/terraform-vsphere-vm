@@ -138,10 +138,13 @@ resource "vsphere_virtual_machine" "vm" {
       "guestinfo.userdata" = base64encode(<<-EOT
       #cloud-config
       ${yamlencode({
-          hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+          hostname    = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
           user        = merge(
                           local.user, { 
-                            ssh_authorized_keys = concat(local.user["ssh_authorized_keys"], [tls_private_key.admin.public_key_openssh]) 
+                            ssh_authorized_keys = concat(
+                              local.user["ssh_authorized_keys"],
+                              [ trimspace(tls_private_key.admin.public_key_openssh) ]
+                            ) 
                           }
                         )
           users       = local.users
