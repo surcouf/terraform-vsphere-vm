@@ -325,6 +325,7 @@ resource "ansible_host" "vm" {
 resource "ansible_group" "groups" {
   for_each    = var.hostgroups
   name        = each.key
+  children    = each.value.children
   variables   = each.value.variables
 }
 
