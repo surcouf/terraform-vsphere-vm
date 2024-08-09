@@ -587,7 +587,10 @@ variable "groups" {
 
 variable "hostgroups" {
   description = "Host groups list"
-  type        = map(object({}))
+  type        = map(object({
+      children  = optional(string)
+      variables = optional(map)
+  }))
   default     = {}
 }
 
