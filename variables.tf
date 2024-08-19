@@ -606,6 +606,12 @@ variable "ansible_skip_tags" {
   default     = []
 }
 
+variable "ansible_tags" {
+  description = "Ansible tags to execute"
+  type        = list(string)
+  default     = []
+}
+
 variable "http_proxy" {
   description = "HTTP proxy server"
   type        = string
