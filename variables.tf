@@ -600,6 +600,12 @@ variable "ansible_user" {
   default     = "root"
 }
 
+variable "ansible_skip_tags" {
+  description = "Ansible tags to skip"
+  type        = list(string)
+  default     = []
+}
+
 variable "http_proxy" {
   description = "HTTP proxy server"
   type        = string
