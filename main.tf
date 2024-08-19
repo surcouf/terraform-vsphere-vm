@@ -341,8 +341,8 @@ resource "ansible_playbook" "playbook" {
     ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.vmname}"
     ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
     ansible_become                = true
-    ansible_run_tags              = var.ansible_tags
-    ansible_skip_tags             = var.ansible_skip_tags
+    ansible_run_tags              = join(",",var.ansible_tags)
+    ansible_skip_tags             = join(",",var.ansible_skip_tags)
     proxy                         = var.http_proxy
     no_proxy                      = var.no_proxy
   }
