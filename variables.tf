@@ -2,7 +2,7 @@
 variable "network" {
   description = "Define PortGroup and IPs/CIDR for each VM. If no CIDR provided, the subnet mask is taken from var.ipv4submask."
   type = map(list(object({
-    name        = string
+    name        = optional(string, "")
     type        = optional(string, "physical")
     mac_address = optional(string, "")
     subnets     = optional(list(object({
