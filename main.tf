@@ -128,6 +128,10 @@ resource "vsphere_virtual_machine" "vm" {
   depends_on = [var.vm_depends_on]
   name       = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   resource_pool_id        = var.vmrp != "" ? data.vsphere_resource_pool.pool[0].id : var.vmrpid
   folder                  = var.vmfolder
   tags                    = var.tag_ids != null ? var.tag_ids : data.vsphere_tag.tag[*].id
