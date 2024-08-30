@@ -130,6 +130,9 @@ resource "vsphere_virtual_machine" "vm" {
 
   lifecycle {
     prevent_destroy = true
+    ignore_changes = [ 
+      clone[0].template_uuid
+    ]
   }
 
   resource_pool_id        = var.vmrp != "" ? data.vsphere_resource_pool.pool[0].id : var.vmrpid
