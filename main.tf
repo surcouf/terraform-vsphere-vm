@@ -337,7 +337,7 @@ resource "ansible_group" "groups" {
 resource "ansible_playbook" "playbook" {
   count       = var.instances
   name        = ansible_host.vm[count.index].name
-  playbook    = "${path.root}/ansible/playbook.yml"
+  playbook    = "${path.root}/ansible/main.yml"
   groups      = keys(var.hostgroups)
   extra_vars  = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
