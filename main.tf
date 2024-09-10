@@ -334,7 +334,7 @@ resource "ansible_group" "groups" {
   variables   = each.value.variables
 }
 
-resource "ansible_playbook" "playbook" {
+resource "ansible_playbook" "main" {
   count       = var.instances
   name        = ansible_host.vm[count.index].name
   playbook    = "${path.root}/ansible/main.yml"
