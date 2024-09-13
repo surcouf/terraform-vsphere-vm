@@ -35,5 +35,5 @@ output "disk" {
 
 output "playbook" {
   description = "Output of Ansible playbook execution"
-  value = ansible_playbook.playbook.*.ansible_playbook_stdout
+  value = ansible_playbook.main.*.ansible_playbook_stdout
 }
