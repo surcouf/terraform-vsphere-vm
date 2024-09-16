@@ -331,7 +331,7 @@ resource "ansible_playbook" "main" {
   count       = var.instances
   name        = ansible_host.vm[count.index].name
   playbook    = "${path.root}/ansible/main.yml"
-  groups      = keys(var.hostgroups)
+  groups      = var.hostgroups
   extra_vars  = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
