@@ -318,7 +318,7 @@ resource "vsphere_virtual_machine" "vm" {
 resource "ansible_host" "vm" {
   count       = var.instances
   name        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-  groups      =  keys(var.hostgroups)
+  groups      =  var.hostgroups
 
   variables   = {
     ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
