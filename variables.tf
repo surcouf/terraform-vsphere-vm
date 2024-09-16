@@ -587,11 +587,8 @@ variable "groups" {
 
 variable "hostgroups" {
   description = "Host groups list"
-  type        = map(object({
-      children  = optional(list(string))
-      variables = optional(map(any))
-  }))
-  default     = {}
+  type        = list(string)
+  default     = []
 }
 
 variable "ansible_user" {
