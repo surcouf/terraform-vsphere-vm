@@ -640,3 +640,9 @@ variable "ssh_key_algorithm" {
   type        = string
   default     = "ED25519"
 }
+
+variable "ansible_hostvars" {
+  description = "Ansible host variables"
+  type        = object()
+  default     = {}
+}
