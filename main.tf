@@ -109,6 +109,7 @@ locals {
     for group in var.groups : 
       group if group != ""
   ]
+  ansible_variables = 
 }
 
 // Generate a SSH key for admin user (default)
@@ -335,6 +336,7 @@ resource "ansible_playbook" "main" {
   extra_vars  = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
+    system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     ansible_ssh_port              = var.ssh_port
     ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.vmname}"
     ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
