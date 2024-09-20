@@ -206,6 +206,7 @@ variable "cpu_share_count" {
 
 variable "ram_size" {
   description = "VM RAM size in megabytes."
+  type        = number
   default     = 4096
 }
 
