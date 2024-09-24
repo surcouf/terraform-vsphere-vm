@@ -610,6 +610,12 @@ variable "ansible_tags" {
   default     = []
 }
 
+variable "ansible_variables" {
+  description = "Ansible variables"
+  type        = list(string)
+  default     = []
+}
+
 variable "http_proxy" {
   description = "HTTP proxy server"
   type        = string

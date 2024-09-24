@@ -109,7 +109,6 @@ locals {
     for group in var.groups : 
       group if group != ""
   ]
-  ansible_variables = 
 }
 
 // Generate a SSH key for admin user (default)
@@ -319,13 +318,9 @@ resource "vsphere_virtual_machine" "vm" {
 resource "ansible_host" "vm" {
   count       = var.instances
   name        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-  groups      =  var.hostgroups
+  groups      = var.hostgroups
 
-  variables   = {
-    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
-    hostname      = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
-    fqdn          = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-  }  
+  variables   = var.ansible_variables
 }
 
 resource "ansible_playbook" "main" {
