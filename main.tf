@@ -109,7 +109,6 @@ locals {
     for group in var.groups : 
       group if group != ""
   ]
-  ansible_variables = 
 }
 
 // Generate a SSH key for admin user (default)
