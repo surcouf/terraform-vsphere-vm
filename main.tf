@@ -343,7 +343,7 @@ resource "ansible_playbook" "main" {
     ansible_become                = true
     ansible_run_tags              = join(",",var.ansible_tags)
     ansible_skip_tags             = join(",",var.ansible_skip_tags)
-    proxy                         = var.http_proxy
+    http_proxy                    = var.http_proxy
     no_proxy                      = var.no_proxy
   }
 }
