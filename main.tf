@@ -334,5 +334,17 @@ resource "ansible_playbook" "main" {
   name        = ansible_host.vm[count.index].name
   playbook    = "${path.root}/ansible/main.yml"
   groups      = var.hostgroups
-  extra_vars  = var.ansible_variables
+  extra_vars  = {
+    ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
+    system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
+    ansible_ssh_port              = var.ssh_port
+    ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.vmname}"
+    ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
+    ansible_become                = true
+    ansible_run_tags              = join(",",var.ansible_tags)
+    ansible_skip_tags             = join(",",var.ansible_skip_tags)
+    http_proxy                    = var.http_proxy
+    no_proxy                      = var.no_proxy
+  }
 }
