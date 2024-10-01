@@ -317,19 +317,13 @@ resource "vsphere_virtual_machine" "vm" {
 
 resource "ansible_host" "vm" {
   count       = var.instances
-  name        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+  name        = vsphere_virtual_machine.vm[count].name
   groups      = var.hostgroups
 
   variables   = {
-    ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
-    hostname                      = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
-    fqdn                          = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-    ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
-    system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
-    ansible_become                = true
-    ansible_ssh_port              = var.ssh_port
-    ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.vmname}"
-    ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
+    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    hostname      = vsphere_virtual_machine.vm[count].name
+    fqdn          = "${vsphere_virtual_machine.vm[count].name}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
   }  
 }
 
