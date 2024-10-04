@@ -317,13 +317,13 @@ resource "vsphere_virtual_machine" "vm" {
 
 resource "ansible_host" "vm" {
   count       = var.instances
-  name        = vsphere_virtual_machine.vm[count].name
+  name        = vsphere_virtual_machine.vm[count.index].name
   groups      = var.hostgroups
 
   variables   = merge(
     var.ansible_variables, {
       ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
-      hostname      = vsphere_virtual_machine.vm[count].name
+      hostname      = vsphere_virtual_machine.vm[count.index].name
       fqdn          = "${vsphere_virtual_machine.vm[count].name}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
     }
   )
