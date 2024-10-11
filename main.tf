@@ -347,6 +347,6 @@ resource "ansible_playbook" "main" {
   }
   var_files   = [
     fileexists("${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml") ?
-      "${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml" : ""
+      "${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml" : null 
   ]
 }
