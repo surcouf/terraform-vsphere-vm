@@ -612,7 +612,7 @@ variable "ansible_tags" {
 
 variable "ansible_variables" {
   description = "Ansible variables"
-  type        = map(map(string))
+  type        = map(map(any))
   default     = {}
 }
 
