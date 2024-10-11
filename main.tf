@@ -346,6 +346,7 @@ resource "ansible_playbook" "main" {
     no_proxy                      = var.no_proxy
   }
   var_files   = [
-    "${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml"
+    fileexists("${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml") ?
+      "${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml" : ""
   ]
 }
