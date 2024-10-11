@@ -320,13 +320,11 @@ resource "ansible_host" "vm" {
   name        = vsphere_virtual_machine.vm[count.index].name
   groups      = var.hostgroups
 
-  variables   = merge(
-    var.ansible_variables, {
-      ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
-      hostname      = vsphere_virtual_machine.vm[count.index].name
-      fqdn          = "${vsphere_virtual_machine.vm[count.index].name}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-    }
-  )
+  variables   = {
+    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    hostname      = vsphere_virtual_machine.vm[count.index].name
+    fqdn          = "${vsphere_virtual_machine.vm[count.index].name}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+  }  
 }
 
 resource "ansible_playbook" "main" {
