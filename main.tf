@@ -345,4 +345,7 @@ resource "ansible_playbook" "main" {
     http_proxy                    = var.http_proxy
     no_proxy                      = var.no_proxy
   }
+  var_files   = [
+    "${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml"
+  ]
 }
