@@ -613,7 +613,7 @@ variable "ansible_tags" {
 variable "ansible_variables" {
   description = "Ansible variables"
   type        = map(map(any))
-  default     = ""
+  default     = {}
 }
 
 variable "http_proxy" {
