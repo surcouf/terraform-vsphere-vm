@@ -126,7 +126,7 @@ resource "local_sensitive_file" "ssh_key" {
 resource "vsphere_virtual_machine" "vm" {
   count      = var.instances
   depends_on = [var.vm_depends_on]
-  name       = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+  name       = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
 
   lifecycle {
     prevent_destroy = true
@@ -146,7 +146,7 @@ resource "vsphere_virtual_machine" "vm" {
       #cloud-config
       ${yamlencode({
           hostname    = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
-          fqdn        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+          fqdn        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.domain}"
           user        = merge(
                           local.user, { 
                             ssh_authorized_keys = concat(
@@ -161,9 +161,9 @@ resource "vsphere_virtual_machine" "vm" {
       ),
       "guestinfo.metadata.encoding" = "base64",
       "guestinfo.metadata" = base64encode(yamlencode({
-          instance-id     = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-          local-hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
-          hostname        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+          instance-id     = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
+          local-hostname  = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
+          hostname        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
           network         = {
             version = 1
             config  = local.network_config
