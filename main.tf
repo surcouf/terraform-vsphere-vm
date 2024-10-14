@@ -322,9 +322,9 @@ resource "ansible_host" "vm" {
   groups      = var.hostgroups
 
   variables   = {
-    ansible_host  = vsphere_virtual_machine.vm[count.index].default_ip_address
-    hostname      = vsphere_virtual_machine.vm[count.index].name
-    fqdn          = "${vsphere_virtual_machine.vm[count.index].name}${var.fqdnvmname == true ? ".${var.domain}" : ""}"
+    ansible_host    = vsphere_virtual_machine.vm[count.index].default_ip_address
+    hostname        = vsphere_virtual_machine.vm[count.index].name
+    fqdn            = "${vsphere_virtual_machine.vm[count.index].name}${var.domain}"
   }  
 }
 
