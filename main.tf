@@ -80,6 +80,7 @@ locals {
   interface_count     = length(var.ipv4submask) #Used for Subnet handeling
   template_disk_count = var.content_library == null ? length(data.vsphere_virtual_machine.template[0].disks) : 0
   network             = [ for key, network in var.network : network[0] ]
+  domain              = var.domain != "" ? ".${var.domain}" : ""
   network_config      = [ 
     for network_key, network_values in local.network : {
         name = network_values.name
@@ -146,7 +147,7 @@ resource "vsphere_virtual_machine" "vm" {
       #cloud-config
       ${yamlencode({
           hostname    = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
-          fqdn        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${var.domain}"
+          fqdn        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}${local.domain}"
           user        = merge(
                           local.user, { 
                             ssh_authorized_keys = concat(
@@ -324,7 +325,7 @@ resource "ansible_host" "vm" {
   variables   = {
     ansible_host    = vsphere_virtual_machine.vm[count.index].default_ip_address
     hostname        = vsphere_virtual_machine.vm[count.index].name
-    fqdn            = "${vsphere_virtual_machine.vm[count.index].name}${var.domain}"
+    fqdn            = "${vsphere_virtual_machine.vm[count.index].name}${local.domain}"
   }  
 }
 
