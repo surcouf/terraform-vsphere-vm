@@ -157,6 +157,16 @@ resource "vsphere_virtual_machine" "vm" {
                           }
                         )
           manage_etc_hosts = true
+          manage_resolv_conf = true
+          resolv_conf = {
+            nameservers = var.dns_server_list
+            searchdomains = var.search_domains
+            domain = var.domain
+            options = {
+              rotate = true
+              timeout = 1
+            }
+          }
       })}
       EOT
       ),
@@ -330,11 +340,11 @@ resource "ansible_host" "vm" {
 }
 
 resource "ansible_playbook" "main" {
-  count       = var.instances
-  name        = ansible_host.vm[count.index].name
-  playbook    = "maiaspace.iac.main"
-  groups      = var.hostgroups
-  extra_vars  = {
+  count             = var.instances
+  name              = ansible_host.vm[count.index].name
+  playbook          = "maiaspace.iac.main"
+  groups            = var.hostgroups
+  extra_vars        = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
@@ -347,5 +357,6 @@ resource "ansible_playbook" "main" {
     http_proxy                    = var.http_proxy
     no_proxy                      = var.no_proxy
   }
-  var_files   = fileexists("${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml") ? [ "${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml" ] : []
+  var_files           = fileexists("${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml") ? [ "${path.cwd}/ansible/host_vars/${ansible_host.vm[count.index].name}.yml" ] : []
+  vault_password_file = var.ansible_vault_password_file
 }

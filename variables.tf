@@ -233,6 +233,11 @@ variable "dns_server_list" {
   default = null
 }
 
+variable "search_domains" {
+  type    = list(string)
+  default = null
+}
+
 #Global Customization Variables
 variable "tags" {
   description = "The names of any tags to attach to this resource. They must already exist."
@@ -607,6 +612,12 @@ variable "ansible_tags" {
 
 variable "ansible_variables" {
   description = "Ansible variables"
+  type        = string
+  default     = ""
+}
+
+variable "ansible_vault_password_file" {
+  description = "Ansible Vault password file"
   type        = string
   default     = ""
 }
