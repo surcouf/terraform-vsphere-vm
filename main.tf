@@ -79,24 +79,7 @@ data "vsphere_storage_policy" "storage_policy" {
 locals {
   interface_count     = length(var.ipv4submask) #Used for Subnet handeling
   template_disk_count = var.content_library == null ? length(data.vsphere_virtual_machine.template[0].disks) : 0
-  network             = [ for key, network in var.network : network[0] ]
   domain              = var.domain != "" ? ".${var.domain}" : ""
-  network_config      = [ 
-    for network_key, network_values in local.network : {
-        name = network_values.name
-        type = network_values.type
-        subnets = [
-          for subnet in network_values.subnets : {
-            type            = subnet.type
-            address         = subnet.address
-            gateway         = subnet.gateway 
-            routes          = subnet.routes 
-            dns_nameservers = var.dns_server_list  
-            dns_search      = var.dns_suffix_list
-          }
-        ]
-      }
-  ]
   user                = {
     for key, value in var.default_user : 
       key => value if value != null
@@ -178,7 +161,22 @@ resource "vsphere_virtual_machine" "vm" {
           hostname        = "${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}"
           network         = {
             version = 1
-            config  = local.network_config
+            config  = [ 
+              for network_key, network_values in [ for key, network in var.network : network[count.index] ] : {
+                name = network_values.name
+                type = network_values.type
+                subnets = [
+                  for subnet in network_values.subnets : {
+                    type            = subnet.type
+                    address         = subnet.address
+                    gateway         = subnet.gateway 
+                    routes          = subnet.routes 
+                    dns_nameservers = var.dns_server_list  
+                    dns_search      = var.dns_suffix_list
+                  }
+                ]
+              }
+            ]
           }
       }))
     },
