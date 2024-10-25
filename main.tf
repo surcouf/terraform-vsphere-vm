@@ -163,7 +163,7 @@ resource "vsphere_virtual_machine" "vm" {
             version = 1
             config  = [ 
               for network_key, network_values in [ for key, network in var.network : network[count.index] ] : {
-                name = "${network_values.name != null ? network_values.name : var.network_interface[network_key]}"
+                name = "${network_values.name != "" ? network_values.name : var.network_interface[network_key]}"
                 type = network_values.type
                 subnets = [
                   for subnet in network_values.subnets : {
