@@ -33,6 +33,16 @@ variable "network_type" {
   default     = null
 }
 
+variable "network_interface" {
+  description = "List of network interface names"
+  type        =  list(string)
+  default     = [ 
+    "ens160",
+    "ens192",
+    "ens224"
+  ]
+}
+
 variable "ipv4submask" {
   description = "ipv4 Subnet mask. Warning: The order must follow the alphabetic order from var.network."
   type        = list(any)
