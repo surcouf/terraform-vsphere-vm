@@ -357,8 +357,8 @@ resource "ansible_playbook" "main" {
     no_proxy                      = var.no_proxy
   }
   var_files           = [ 
-    for file in [ "host_vars/${ansible_host.vm[count.index].name}.yml" ] : 
-      file if fileexists("${path.cwd}/ansible/${file}")
+    for file in  merge( var.hostgroups, [ "all", "${ansible_host.vm[count.index].name}"]) : 
+      file if fileexists("${path.cwd}/ansible/${file}.yml")
   ]
   vault_password_file = var.ansible_vault_password_file
 }
