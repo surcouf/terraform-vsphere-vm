@@ -344,7 +344,6 @@ resource "ansible_playbook" "main" {
   playbook          = "maiaspace.iac.main"
   groups            = var.hostgroups
   extra_vars        = {
-    inventory_file                = "${path.cwd}/ansible/01-terraform-gitlab.yml"
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
