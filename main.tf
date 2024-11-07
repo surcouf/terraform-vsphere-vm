@@ -93,6 +93,7 @@ locals {
     for group in var.groups : 
       group if group != ""
   ]
+  hostgroups          = merge( ["all"], var.hostgroups)
 }
 
 // Generate a SSH key for admin user (default)
@@ -339,11 +340,11 @@ resource "ansible_host" "vm" {
 }
 
 resource "ansible_playbook" "main" {
-  count             = var.instances
-  name              = ansible_host.vm[count.index].name
-  playbook          = "maiaspace.iac.main"
-  groups            = var.hostgroups
-  extra_vars        = {
+  count               = var.instances
+  name                = ansible_host.vm[count.index].name
+  playbook            = "maiaspace.iac.main"
+  groups              = var.hostgroups
+  extra_vars          = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
     ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
@@ -356,9 +357,9 @@ resource "ansible_playbook" "main" {
     http_proxy                    = var.http_proxy
     no_proxy                      = var.no_proxy
   }
-  var_files           = [ 
-    for file in  merge( var.hostgroups, [ "all", "${ansible_host.vm[count.index].name}"]) : 
-      file if fileexists("${path.cwd}/ansible/${file}.yml")
+  var_files           = [
+    for file in merge( local.hostgroups, [ "${ansible_host.vm[count.index].name}" ])
+      : file if fileexists("${path.cwd}/ansible/${file}.yml")
   ]
   vault_password_file = var.ansible_vault_password_file
 }
