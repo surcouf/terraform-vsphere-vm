@@ -93,7 +93,7 @@ locals {
     for group in var.groups : 
       group if group != ""
   ]
-  hostgroups          = merge( ["all"], var.hostgroups)
+  hostgroups          = concat( ["all"], var.hostgroups)
 }
 
 // Generate a SSH key for admin user (default)
@@ -358,7 +358,7 @@ resource "ansible_playbook" "main" {
     no_proxy                      = var.no_proxy
   }
   var_files           = [
-    for file in merge( local.hostgroups, [ "${ansible_host.vm[count.index].name}" ])
+    for file in concat( local.hostgroups, [ "${ansible_host.vm[count.index].name}" ])
       : file if fileexists("${path.cwd}/ansible/${file}.yml")
   ]
   vault_password_file = var.ansible_vault_password_file
