@@ -356,9 +356,6 @@ resource "ansible_playbook" "main" {
     http_proxy                    = var.http_proxy
     no_proxy                      = var.no_proxy
   }
-  var_files           = [ 
-    for file in [ "host_vars/${ansible_host.vm[count.index].name}.yml" ] : 
-      file if fileexists("${path.cwd}/ansible/${file}")
-  ]
+  temp_inventory_file = "${path.cwd}/ansible"
   vault_password_file = var.ansible_vault_password_file
 }
