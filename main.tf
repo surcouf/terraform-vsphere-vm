@@ -93,7 +93,9 @@ locals {
     for group in var.groups : 
       group if group != ""
   ]
-  hostgroups          = concat( ["all"], var.hostgroups)
+  hostgroups          = [
+    for group in concat( ["all"], var.hostgroups)
+      : "group_vars/${group}"
 }
 
 // Generate a SSH key for admin user (default)
