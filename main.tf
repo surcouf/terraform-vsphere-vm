@@ -336,20 +336,9 @@ resource "ansible_host" "vm" {
   groups      = var.hostgroups
 
   variables   = {
-    ansible_host    = vsphere_virtual_machine.vm[count.index].default_ip_address
-    hostname        = vsphere_virtual_machine.vm[count.index].name
-    fqdn            = "${vsphere_virtual_machine.vm[count.index].name}${local.domain}"
-  }  
-}
-
-resource "ansible_playbook" "main" {
-  count               = var.instances
-  name                = ansible_host.vm[count.index].name
-  playbook            = "maiaspace.iac.main"
-  groups              = var.hostgroups
-  extra_vars          = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
-    ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
+    hostname                      = vsphere_virtual_machine.vm[count.index].name
+    fqdn                          = "${vsphere_virtual_machine.vm[count.index].name}${local.domain}"
     system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     ansible_ssh_port              = var.ssh_port
     ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.vmname}"
@@ -360,9 +349,4 @@ resource "ansible_playbook" "main" {
     http_proxy                    = var.http_proxy
     no_proxy                      = var.no_proxy
   }
-  var_files           = [
-    for file in concat( local.hostgroups, [ "host_vars/${ansible_host.vm[count.index].name}" ])
-      : "${path.cwd}/ansible/${file}.yml" if fileexists("${path.cwd}/ansible/${file}.yml")
-  ]
-  vault_password_file = var.ansible_vault_password_file
 }
