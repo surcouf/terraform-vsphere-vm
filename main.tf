@@ -337,6 +337,7 @@ resource "ansible_host" "vm" {
 
   variables   = {
     ansible_host                  = vsphere_virtual_machine.vm[count.index].default_ip_address
+    ansible_user                  = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     hostname                      = vsphere_virtual_machine.vm[count.index].name
     fqdn                          = "${vsphere_virtual_machine.vm[count.index].name}${local.domain}"
     system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
