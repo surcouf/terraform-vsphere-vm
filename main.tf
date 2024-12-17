@@ -333,7 +333,7 @@ resource "vsphere_virtual_machine" "vm" {
     host        = self.default_ip_address
     user        = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     port        = var.ssh_port
-    private_key = file("${path.cwd}/.ssh_id_${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}")
+    private_key = file("${path.cwd}/.ssh_id_${var.staticvmname != null ? var.staticvmname : var.vmname}" )
   }
 
   provisioner "remote-exec" {
@@ -355,7 +355,7 @@ resource "ansible_host" "vm" {
     fqdn                          = "${vsphere_virtual_machine.vm[count.index].name}${local.domain}"
     system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     ansible_ssh_port              = var.ssh_port
-    ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.vmname}"
+    ansible_ssh_private_key_file  = "${path.cwd}/.ssh_id_${var.staticvmname != null ? var.staticvmname : var.vmname}"
     ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
     ansible_become                = true
     ansible_run_tags              = join(",",var.ansible_tags)
