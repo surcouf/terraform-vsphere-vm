@@ -330,7 +330,7 @@ resource "vsphere_virtual_machine" "vm" {
   force_power_off       = var.force_power_off
 
   connection {
-    host        = self.public_ip
+    host        = self.default_ip_address
     user        = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     port        = var.ssh_port
     private_key = local_sensitive_file.ssh_key
