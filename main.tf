@@ -328,6 +328,19 @@ resource "vsphere_virtual_machine" "vm" {
 
   shutdown_wait_timeout = var.shutdown_wait_timeout
   force_power_off       = var.force_power_off
+
+  connection {
+    host        = self.public_ip
+    user        = var.ansible_user != "" ? var.ansible_user : var.default_user.name
+    port        = var.ssh_port
+    private_key = local_sensitive_file.ssh_key
+  }
+
+  provisioner "remote-exec" {
+    inline = [ 
+      "uptime"
+     ]
+  }
 }
 
 resource "ansible_host" "vm" {
