@@ -333,7 +333,7 @@ resource "vsphere_virtual_machine" "vm" {
     host        = self.default_ip_address
     user        = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     port        = var.ssh_port
-    private_key = local_sensitive_file.ssh_key
+    private_key = file("${path.cwd}/.ssh_id_${var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + var.vmstartcount)}")
   }
 
   provisioner "remote-exec" {
