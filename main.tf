@@ -361,7 +361,7 @@ resource "ansible_host" "vm" {
     ansible_run_tags              = join(",",var.ansible_tags)
     ansible_skip_tags             = join(",",var.ansible_skip_tags)
     http_proxy                    = var.http_proxy
-    https_proxy                   = var.http_proxy
+    https_proxy                   = var.https_proxy != "" ? var.https_proxy : var.http_proxy
     no_proxy                      = var.no_proxy
   }
 }

@@ -638,6 +638,12 @@ variable "http_proxy" {
   default     = ""
 }
 
+variable "https_proxy" {
+  description = "HTTPS proxy server"
+  type        = string
+  default     = ""
+}
+
 variable "no_proxy" {
   description = "HTTP proxy white list"
   type        = string
