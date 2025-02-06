@@ -119,8 +119,7 @@ resource "vsphere_virtual_machine" "vm" {
   lifecycle {
     prevent_destroy = true
     ignore_changes = [ 
-      clone[0].template_uuid,
-      disk[0]
+      clone[0].template_uuid
     ]
   }
 
