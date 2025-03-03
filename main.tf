@@ -106,12 +106,12 @@ resource "tls_private_key" "admin" {
 }
 
 resource "local_file" "ssh_public_key" {
-  filename  = "~/.ssh/ssh_id_${var.vmname}.pub"
+  filename  = "${HOME}/.ssh/ssh_id_${var.vmname}.pub"
   content   = trimspace(tls_private_key.admin.public_key_openssh)
 }
 
 resource "local_sensitive_file" "ssh_key" {
-  filename  = "~/.ssh/ssh_id_${var.vmname}"
+  filename  = "${HOME}/.ssh/ssh_id_${var.vmname}"
   content   = tls_private_key.admin.private_key_openssh
 }
 
@@ -338,7 +338,7 @@ resource "vsphere_virtual_machine" "vm" {
     host        = self.default_ip_address
     user        = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     port        = var.ssh_port
-    private_key = file("~/.ssh/ssh_id_${var.staticvmname != null ? var.staticvmname : var.vmname}" )
+    private_key = file("${HOME}/.ssh/ssh_id_${var.staticvmname != null ? var.staticvmname : var.vmname}" )
   }
 
   provisioner "remote-exec" {
@@ -360,7 +360,7 @@ resource "ansible_host" "vm" {
     fqdn                          = "${vsphere_virtual_machine.vm[count.index].name}${local.domain}"
     system_users__self_name       = var.ansible_user != "" ? var.ansible_user : var.default_user.name
     ansible_ssh_port              = var.ssh_port
-    ansible_ssh_private_key_file  = "~/.ssh/ssh_id_${var.staticvmname != null ? var.staticvmname : var.vmname}"
+    ansible_ssh_private_key_file  = "${HOME}/.ssh/ssh_id_${var.staticvmname != null ? var.staticvmname : var.vmname}"
     ansible_ssh_common_args       = join(" ", [for key, value in var.ssh_options : "-o ${key}=${value}"])
     ansible_become                = true
     ansible_run_tags              = join(",",var.ansible_tags)
